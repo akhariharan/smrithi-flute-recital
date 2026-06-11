@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Smrithi · A Benefit Concert for AAUW</title>
+<style>
+  /* ============================================================
+     EDIT THESE QUICK SETTINGS
+     - Photo: set --photo-url below, OR leave it and use the SVG fallback
+     - Apps Script URL + donation link are in the <script> at the bottom
+     ============================================================ */
+  :root {
+    --photo-url: url("PASTE_SMRITHI_PHOTO_URL_HERE");
+
+    --yellow: #FFD53D;
+    --yellow-hot: #FFE066;
+    --magenta: #FF4F8B;
+    --coral: #FF6B6B;
+    --amber: #FFA94D;
+    --ivory: #FFF6E8;
+    --navy: #0D2459;
+    --mist: rgba(255, 240, 220, 0.08);
+    --mist-strong: rgba(255, 240, 220, 0.16);
+    --text: #FFF3E4;
+    --text-dim: #F0C9B8;
+    --radius-lg: 28px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .stage {
+    position: relative;
+    background:
+      radial-gradient(1200px 600px at 80% -10%, rgba(255, 169, 77, 0.45), transparent 60%),
+      radial-gradient(900px 600px at 10% 110%, rgba(255, 107, 107, 0.35), transparent 60%),
+      radial-gradient(700px 500px at 50% 50%, rgba(255, 79, 139, 0.18), transparent 70%),
+      linear-gradient(180deg, #3A1226 0%, #2A0E1C 50%, #1A0815 100%);
+    overflow: hidden;
+    isolation: isolate;
+    padding: 56px 24px 80px;
+    min-height: 100vh;
+  }
+
+  /* floating orbs */
+  .orb { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.55; z-index: 0; pointer-events: none; }
+  .orb-1 { width: 420px; height: 420px; background: var(--coral); top: -120px; left: -120px; animation: drift 18s ease-in-out infinite; }
+  .orb-2 { width: 360px; height: 360px; background: var(--amber); top: 40%; right: -100px; animation: drift 22s ease-in-out infinite reverse; }
+  .orb-3 { width: 480px; height: 480px; background: var(--magenta); bottom: -160px; left: 30%; animation: drift 26s ease-in-out infinite; }
+  @keyframes drift { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(60px,-40px) scale(1.08); } }
+
+  /* hero */
+  .hero {
+    position: relative; z-index: 2;
+    max-width: 1180px; margin: 0 auto;
+    display: grid; grid-template-columns: 1.05fr 0.95fr;
+    gap: 56px; align-items: center;
+    padding: 32px 12px 56px;
+  }
+  .kicker {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 12px; letter-spacing: 0.22em; font-weight: 600;
+    color: var(--yellow); text-transform: uppercase;
+    background: rgba(251,192,87,0.08); border: 1px solid rgba(251,192,87,0.35);
+    padding: 8px 14px; border-radius: 999px; margin-bottom: 22px;
+  }
+  .kicker-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--yellow); box-shadow: 0 0 12px var(--yellow); animation: pulse 1.6s ease-in-out infinite; }
+  @keyframes pulse { 0%,100% { opacity:1; transform:scale(1);} 50% { opacity:.6; transform:scale(1.3);} }
+
+  .hero-title { font-size: clamp(40px, 6vw, 78px); line-height: 0.98; font-weight: 800; letter-spacing: -0.025em; margin: 0 0 18px; color: #fff; }
+  .hero-title-accent {
+    display: block;
+    background: linear-gradient(95deg, var(--yellow) 0%, var(--amber) 35%, var(--coral) 65%, var(--magenta) 100%);
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent;
+  }
+  .hero-tagline { font-size: 18px; line-height: 1.55; color: var(--text-dim); max-width: 520px; margin: 0 0 28px; }
+
+  .event-chips { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 30px; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 14px; border-radius: 999px;
+    background: var(--mist); border: 1px solid var(--mist-strong);
+    color: var(--text); font-size: 14px; font-weight: 500; backdrop-filter: blur(12px);
+  }
+  .chip-icon { width: 16px; height: 16px; color: var(--yellow); }
+
+  .hero-cta-row { display: flex; gap: 14px; flex-wrap: wrap; }
+
+  .btn-primary {
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+    padding: 16px 26px; font-size: 16px; font-weight: 700; color: var(--navy);
+    background: linear-gradient(135deg, var(--yellow) 0%, var(--yellow-hot) 100%);
+    border: none; border-radius: 999px; cursor: pointer; text-decoration: none;
+    box-shadow: 0 12px 40px -10px rgba(251,192,87,0.6);
+    transition: transform .18s ease, box-shadow .25s ease;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 18px 48px -10px rgba(251,192,87,0.8), 0 0 0 6px rgba(251,192,87,0.12); }
+  .btn-primary:active { transform: translateY(0); }
+  .btn-primary:disabled { opacity: .7; cursor: not-allowed; transform: none; }
+  .btn-arrow { width: 18px; height: 18px; }
+  .btn-big { padding: 19px 32px; font-size: 18px; }
+
+  .btn-ghost {
+    display: inline-flex; align-items: center; padding: 16px 24px;
+    font-size: 15px; font-weight: 600; color: #fff; background: transparent;
+    border: 1px solid var(--mist-strong); border-radius: 999px; text-decoration: none;
+    cursor: pointer; transition: background .2s, border-color .2s;
+  }
+  .btn-ghost:hover { background: var(--mist); border-color: rgba(255,255,255,0.3); }
+  .btn-ghost-dark {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 14px 22px; font-size: 14px; font-weight: 600; color: rgba(13,36,89,0.7);
+    background: transparent; border: 1px solid rgba(13,36,89,0.2); border-radius: 999px;
+    cursor: pointer; transition: background .2s, color .2s;
+  }
+  .btn-ghost-dark:hover { background: rgba(13,36,89,0.06); color: var(--navy); }
+
+  /* portrait */
+  .hero-art { position: relative; display: flex; flex-direction: column; align-items: center; }
+  .portrait-wrap {
+    position: relative; width: 100%; max-width: 420px; aspect-ratio: 4/5;
+    border-radius: 32px; overflow: hidden;
+    background: linear-gradient(165deg, rgba(255,255,255,0.07), rgba(255,255,255,0.02));
+    border: 1px solid var(--mist-strong);
+    box-shadow: 0 30px 80px -20px rgba(0,0,0,0.6);
+    transform: rotate(-2deg); transition: transform .5s cubic-bezier(.2,.7,.2,1);
+  }
+  .portrait-wrap:hover { transform: rotate(0deg) scale(1.02); }
+  .portrait-glow {
+    position: absolute; inset: -40%;
+    background: conic-gradient(from 180deg, var(--magenta), var(--coral), var(--amber), var(--yellow), var(--coral), var(--magenta));
+    filter: blur(60px); opacity: 0.65; animation: spin 24s linear infinite; z-index: 0;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  /* The photo. If --photo-url is left as the placeholder, the SVG fallback shows instead. */
+  .portrait-img {
+    position: relative; z-index: 1; width: 100%; height: 100%;
+    background-image: var(--photo-url);
+    background-size: cover; background-position: center; display: block;
+  }
+  .portrait-svg { position: relative; z-index: 1; width: 100%; height: 100%; display: block; }
+
+  .venue-card {
+    position: absolute; bottom: -28px; right: -8px;
+    background: var(--ivory); color: var(--navy);
+    padding: 14px 18px; border-radius: 16px;
+    box-shadow: 0 20px 40px -12px rgba(0,0,0,0.5);
+    display: flex; flex-direction: column; gap: 2px; max-width: 240px; transform: rotate(3deg);
+  }
+  .venue-card-label { font-size: 10px; letter-spacing: 0.2em; color: var(--magenta); font-weight: 700; }
+  .venue-card strong { font-size: 15px; font-weight: 700; }
+  .venue-card span:last-child { font-size: 12px; color: rgba(13,36,89,0.65); }
+
+  /* sections */
+  .section { position: relative; z-index: 2; max-width: 1000px; margin: 30px auto; padding: 0 12px; }
+  .section-tag { display: inline-block; font-size: 11px; letter-spacing: 0.22em; font-weight: 700; color: var(--amber); margin-bottom: 14px; }
+  .card {
+    background: rgba(255,255,255,0.04); border: 1px solid var(--mist-strong);
+    border-radius: var(--radius-lg); padding: 40px 44px; backdrop-filter: blur(20px);
+  }
+  .card h2 { font-size: clamp(26px, 3vw, 36px); font-weight: 800; letter-spacing: -0.02em; margin: 0 0 16px; color: #fff; }
+  .card p { font-size: 17px; line-height: 1.7; color: var(--text-dim); margin: 0 0 14px; }
+  .card p:last-child { margin-bottom: 0; }
+  .card p strong { color: #fff; font-weight: 600; }
+
+  /* donate */
+  .donate-card { position: relative; overflow: hidden; border-radius: var(--radius-lg); padding: 52px 44px; text-align: center; isolation: isolate; }
+  .donate-card-bg {
+    position: absolute; inset: 0; z-index: -1;
+    background:
+      radial-gradient(600px 300px at 50% -10%, rgba(255,79,139,0.45), transparent 70%),
+      linear-gradient(135deg, var(--yellow) 0%, var(--amber) 35%, var(--coral) 70%, var(--magenta) 100%);
+  }
+  .donate-card .section-tag { color: var(--navy); opacity: 0.65; }
+  .donate-card h2 { color: var(--navy); font-size: clamp(26px, 4vw, 40px); margin-bottom: 14px; }
+  .donate-card p { color: var(--navy); opacity: 0.85; max-width: 620px; margin: 0 auto 26px; font-size: 17px; }
+  .donate-card .btn-primary { background: var(--navy); color: var(--yellow); box-shadow: 0 18px 50px -10px rgba(13,36,89,0.5); }
+  .donate-card .btn-primary:hover { background: #0B1D4A; }
+
+  .footer { position: relative; z-index: 2; text-align: center; margin: 56px auto 0; color: var(--text-dim); font-size: 13px; letter-spacing: 0.04em; }
+
+  /* modal */
+  .modal-backdrop { position: fixed; inset: 0; background: rgba(5,8,24,0.72); backdrop-filter: blur(8px); z-index: 999; animation: fade-in .2s ease; display: none; }
+  .modal {
+    position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%); z-index: 1000;
+    width: min(560px, 92vw); max-height: 90vh; overflow-y: auto;
+    background: linear-gradient(160deg, #FFF6E8 0%, #FFE8D9 100%); color: var(--navy);
+    border-radius: 24px; padding: 32px;
+    box-shadow: 0 40px 100px -20px rgba(60,18,38,0.7);
+    animation: pop-in .28s cubic-bezier(.2,.9,.3,1.15); display: none;
+  }
+  @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes pop-in { from { opacity: 0; transform: translate(-50%,-48%) scale(.96); } to { opacity: 1; transform: translate(-50%,-50%) scale(1); } }
+  .modal-close {
+    position: absolute; top: 16px; right: 16px; width: 36px; height: 36px; border-radius: 50%;
+    border: none; background: rgba(13,36,89,0.08); color: var(--navy); cursor: pointer;
+    display: flex; align-items: center; justify-content: center; transition: background .2s;
+  }
+  .modal-close svg { width: 18px; height: 18px; }
+  .modal-close:hover { background: rgba(13,36,89,0.16); }
+  .modal-head h3 { font-size: 24px; font-weight: 800; margin: 0 0 6px; letter-spacing: -0.02em; }
+  .modal-head p { font-size: 14px; color: rgba(13,36,89,0.7); margin: 0 0 18px; }
+
+  /* attend toggle */
+  .choice { display: flex; gap: 12px; margin-bottom: 6px; }
+  .choice button {
+    flex: 1; padding: 14px; border: 2px solid rgba(13,36,89,0.15); background: #fff;
+    border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; color: rgba(13,36,89,0.6);
+    transition: all .15s; font-family: inherit;
+  }
+  .choice button.active-yes { border-color: #1B8E4F; color: #1B8E4F; background: #f0fdf4; }
+  .choice button.active-no { border-color: var(--magenta); color: var(--magenta); background: #fff0f5; }
+
+  .rsvp-form { display: flex; flex-direction: column; gap: 16px; margin: 18px 0 22px; }
+  .form-field { display: flex; flex-direction: column; gap: 6px; }
+  .form-field label { font-size: 12px; letter-spacing: 0.14em; font-weight: 700; text-transform: uppercase; color: rgba(13,36,89,0.65); }
+  .form-field input {
+    width: 100%; padding: 14px 16px; font-size: 16px; font-family: inherit; color: var(--navy);
+    background: #fff; border: 1.5px solid rgba(255,107,107,0.25); border-radius: 12px;
+    transition: border-color .18s ease, box-shadow .18s ease;
+  }
+  .form-field input:focus { outline: none; border-color: var(--coral); box-shadow: 0 0 0 4px rgba(255,107,107,0.15); }
+  .form-hint { font-size: 12px; color: rgba(13,36,89,0.5); }
+  .accept-only { display: none; }
+  .accept-only.show { display: flex; flex-direction: column; gap: 16px; }
+  .form-error { margin: 0 0 14px; padding: 12px 14px; font-size: 13px; color: #B0234C; background: rgba(255,79,139,0.1); border: 1px solid rgba(255,79,139,0.3); border-radius: 10px; font-weight: 600; display: none; }
+  .form-error.show { display: block; }
+
+  .modal-actions { display: flex; gap: 12px; justify-content: flex-end; flex-wrap: wrap; }
+  .modal-actions .btn-primary { background: var(--navy); color: var(--yellow); }
+  .modal-actions .btn-primary:hover { background: #0B1D4A; }
+
+  .thanks { text-align: center; padding: 24px 8px 8px; display: none; }
+  .thanks.show { display: block; }
+  .thanks-burst {
+    width: 80px; height: 80px; margin: 0 auto 18px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--yellow), var(--magenta)); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 20px 60px -10px rgba(255,79,163,0.55); animation: pop-in .4s cubic-bezier(.2,.9,.3,1.4);
+  }
+  .thanks-burst svg { width: 36px; height: 36px; }
+  .thanks h3 { font-size: 26px; font-weight: 800; margin: 0 0 8px; letter-spacing: -0.02em; }
+  .thanks p { font-size: 15px; color: rgba(13,36,89,0.7); margin: 0 0 24px; }
+
+  .spinner { width: 14px; height: 14px; border: 2px solid rgba(13,36,89,0.3); border-top-color: var(--navy); border-radius: 50%; animation: spin .7s linear infinite; display: inline-block; }
+
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; gap: 56px; padding: 16px 0 40px; }
+    .hero-art { order: -1; }
+    .portrait-wrap { max-width: 300px; }
+    .card { padding: 28px 24px; }
+    .donate-card { padding: 40px 22px; }
+    .stage { padding: 32px 16px 56px; }
+  }
+  @media (max-width: 520px) {
+    .modal { padding: 24px 18px; }
+    .hero-cta-row { flex-direction: column; align-items: stretch; }
+    .btn-primary, .btn-ghost { justify-content: center; }
+  }
+</style>
+</head>
+<body>
+  <div class="stage">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-copy">
+        <span class="kicker"><span class="kicker-dot"></span> A BENEFIT CONCERT FOR AAUW</span>
+        <h1 class="hero-title">
+          An Evening with Smrithi
+          <span class="hero-title-accent">where music meets STEM.</span>
+        </h1>
+        <p class="hero-tagline">A special benefit concert celebrating Smrithi's musical journey — and supporting the cause that sparked her love of science.</p>
+
+        <div class="event-chips">
+          <span class="chip">
+            <svg class="chip-icon" viewBox="0 0 24 24" fill="none"><path d="M8 2v4M16 2v4M3 10h18M5 6h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            August 15, 2026
+          </span>
+          <span class="chip">
+            <svg class="chip-icon" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            6:00 PM
+          </span>
+          <span class="chip">
+            <svg class="chip-icon" viewBox="0 0 24 24" fill="none"><path d="M12 22s-7-7.58-7-13a7 7 0 0 1 14 0c0 5.42-7 13-7 13z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="9" r="2.5" stroke="currentColor" stroke-width="2"/></svg>
+            Carpenter Theater, Westlake High
+          </span>
+        </div>
+
+        <div class="hero-cta-row">
+          <button class="btn-primary" onclick="openRsvp()">
+            <span>RSVP Now</span>
+            <svg viewBox="0 0 24 24" fill="none" class="btn-arrow"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <a class="btn-ghost" href="#donate">Make a Donation</a>
+        </div>
+      </div>
+
+      <div class="hero-art">
+        <div class="portrait-wrap">
+          <div class="portrait-glow"></div>
+          <!-- Photo slot: set --photo-url at the top of the file. Fallback art shows until you do. -->
+          <div class="portrait-img" id="portraitImg"></div>
+          <svg viewBox="0 0 400 500" class="portrait-svg" id="portraitFallback" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="skin" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#FFB997"/><stop offset="50%" stop-color="#FF8A4D"/><stop offset="100%" stop-color="#FF6B6B"/></linearGradient>
+              <linearGradient id="hair" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#5A1530"/><stop offset="100%" stop-color="#2A0E1C"/></linearGradient>
+              <radialGradient id="halo" cx="0.5" cy="0.4" r="0.6"><stop offset="0%" stop-color="#FFD53D" stop-opacity="0.6"/><stop offset="100%" stop-color="#FFD53D" stop-opacity="0"/></radialGradient>
+            </defs>
+            <rect width="400" height="500" fill="#3A1226"/>
+            <circle cx="200" cy="200" r="180" fill="url(#halo)"/>
+            <path d="M200 90 C 130 90 100 150 105 220 C 108 270 130 300 150 320 L 150 420 L 250 420 L 250 320 C 270 300 292 270 295 220 C 300 150 270 90 200 90 Z" fill="url(#hair)"/>
+            <ellipse cx="200" cy="230" rx="78" ry="92" fill="url(#skin)"/>
+            <path d="M168 220 q 12 -10 22 0" stroke="#2A0E1C" stroke-width="4" stroke-linecap="round" fill="none"/>
+            <path d="M210 220 q 12 -10 22 0" stroke="#2A0E1C" stroke-width="4" stroke-linecap="round" fill="none"/>
+            <path d="M184 270 q 16 14 32 0" stroke="#2A0E1C" stroke-width="4" stroke-linecap="round" fill="none"/>
+            <circle cx="155" cy="245" r="10" fill="#FFD53D" opacity="0.5"/>
+            <circle cx="245" cy="245" r="10" fill="#FFD53D" opacity="0.5"/>
+            <g opacity="0.9">
+              <circle cx="320" cy="120" r="6" fill="#FFD53D"/><path d="M326 120 v -60" stroke="#FFD53D" stroke-width="3" stroke-linecap="round"/>
+              <circle cx="80" cy="380" r="6" fill="#FF4F8B"/><path d="M86 380 v -50" stroke="#FF4F8B" stroke-width="3" stroke-linecap="round"/>
+            </g>
+            <text x="200" y="470" text-anchor="middle" fill="#FFF3E4" opacity="0.5" font-size="15" font-family="sans-serif">add Smrithi's photo</text>
+          </svg>
+        </div>
+        <div class="venue-card">
+          <span class="venue-card-label">VENUE</span>
+          <strong>Carpenter Theater</strong>
+          <span>Westlake High School</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section class="section">
+      <div class="card">
+        <span class="section-tag">THE STORY</span>
+        <h2>Why this concert</h2>
+        <p>Smrithi is about to start her junior year of high school, balancing a strong love for music with a deep passion for science. A pivotal moment in her middle school years was attending an AAUW event, which sparked her lifelong interest in STEM. Ever since, she has wanted to support AAUW's mission by combining it with her love for music.</p>
+        <p>Please join us for a special benefit concert to celebrate Smrithi's musical journey. We kindly invite you to attend and consider making a donation to support this fantastic cause.</p>
+      </div>
+    </section>
+
+    <!-- DONATE -->
+    <section class="section" id="donate">
+      <div class="donate-card">
+        <div class="donate-card-bg"></div>
+        <span class="section-tag">DONATE</span>
+        <h2>Support the cause</h2>
+        <p>Every contribution helps advance AAUW's mission of equity and opportunity for women and girls in STEM. If you're moved by Smrithi's story, please consider chipping in.</p>
+        <a class="btn-primary btn-big" id="donateBtn" href="PASTE_DONATION_LINK_HERE" target="_blank" rel="noopener">
+          <span>I'd like to donate</span>
+          <svg viewBox="0 0 24 24" fill="none" class="btn-arrow"><path d="M7 17L17 7M17 7H8M17 7v9" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <span>Built with love for AAUW · See you on August 15</span>
+    </footer>
+  </div>
+
+  <!-- RSVP MODAL -->
+  <div class="modal-backdrop" id="backdrop" onclick="closeRsvp()"></div>
+  <div class="modal" id="modal" role="dialog" aria-modal="true">
+    <button class="modal-close" onclick="closeRsvp()" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+    </button>
+
+    <!-- form view -->
+    <div id="formView">
+      <div class="modal-head">
+        <h3>RSVP</h3>
+        <p>August 15, 2026 · 6:00 PM · Carpenter Theater, Westlake High</p>
+      </div>
+
+      <form id="rsvpForm">
+        <div class="form-field">
+          <label>Will you attend?</label>
+          <div class="choice">
+            <button type="button" id="btnYes" onclick="setAttending('yes')">Accept</button>
+            <button type="button" id="btnNo" onclick="setAttending('no')">Decline</button>
+          </div>
+        </div>
+
+        <div class="rsvp-form">
+          <div class="form-field">
+            <label for="fullName">Full name</label>
+            <input type="text" id="fullName" autocomplete="name" placeholder="Jane Doe" required />
+          </div>
+          <div class="form-field">
+            <label for="email">Email</label>
+            <input type="email" id="email" autocomplete="email" placeholder="you@example.com" required />
+            <span class="form-hint">Use the same email to update your RSVP later (e.g. change head count).</span>
+          </div>
+
+          <div class="accept-only" id="acceptFields">
+            <div class="form-field">
+              <label for="phone">Phone number</label>
+              <input type="tel" id="phone" autocomplete="tel" placeholder="(555) 123-4567" />
+            </div>
+            <div class="form-field">
+              <label for="participants">Number of participants</label>
+              <input type="number" id="participants" min="1" value="1" />
+              <span class="form-hint">Including you.</span>
+            </div>
+          </div>
+        </div>
+
+        <p class="form-error" id="formError"></p>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-ghost-dark" onclick="closeRsvp()">Cancel</button>
+          <button type="submit" class="btn-primary" id="submitBtn"><span>Save my RSVP</span></button>
+        </div>
+      </form>
+    </div>
+
+    <!-- thanks view -->
+    <div class="thanks" id="thanksView">
+      <div class="thanks-burst">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <h3 id="thanksTitle">You're in! 🎉</h3>
+      <p id="thanksBody"></p>
+      <div class="modal-actions modal-actions-center" style="justify-content:center;">
+        <button class="btn-primary" onclick="closeRsvp()">Done</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+  /* ============================================================
+     CONFIG — fill these two in
+     ============================================================ */
+  const SCRIPT_URL = "PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE";
+  // Donation link is set directly on the button's href in the HTML above
+  //   (search for PASTE_DONATION_LINK_HERE). If you leave it, the button does nothing.
+  /* ============================================================ */
+
+  // show real photo only if the user actually set a URL
+  (function () {
+    const raw = getComputedStyle(document.documentElement).getPropertyValue('--photo-url');
+    const hasPhoto = raw && !raw.includes('PASTE_SMRITHI_PHOTO_URL_HERE');
+    document.getElementById('portraitImg').style.display = hasPhoto ? 'block' : 'none';
+    document.getElementById('portraitFallback').style.display = hasPhoto ? 'none' : 'block';
+  })();
+
+  const backdrop = document.getElementById('backdrop');
+  const modal = document.getElementById('modal');
+  const formView = document.getElementById('formView');
+  const thanksView = document.getElementById('thanksView');
+  const acceptFields = document.getElementById('acceptFields');
+  const phone = document.getElementById('phone');
+  const participants = document.getElementById('participants');
+  const formError = document.getElementById('formError');
+  const submitBtn = document.getElementById('submitBtn');
+  const btnYes = document.getElementById('btnYes');
+  const btnNo = document.getElementById('btnNo');
+
+  let attending = 'yes';
+
+  function openRsvp() {
+    formView.style.display = 'block';
+    thanksView.classList.remove('show');
+    setAttending('yes');
+    formError.classList.remove('show');
+    backdrop.style.display = 'block';
+    modal.style.display = 'block';
+  }
+  function closeRsvp() {
+    backdrop.style.display = 'none';
+    modal.style.display = 'none';
+  }
+  function setAttending(val) {
+    attending = val;
+    btnYes.classList.toggle('active-yes', val === 'yes');
+    btnNo.classList.toggle('active-no', val === 'no');
+    const showAccept = val === 'yes';
+    acceptFields.classList.toggle('show', showAccept);
+    phone.required = showAccept;
+  }
+  function showError(msg) { formError.textContent = msg; formError.classList.add('show'); }
+
+  document.getElementById('rsvpForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    formError.classList.remove('show');
+
+    const fullName = document.getElementById('fullName').value.trim();
+    const email = document.getElementById('email').value.trim();
+    if (!fullName || !email) { showError('Please fill in your name and email.'); return; }
+
+    const payload = {
+      attending: attending,
+      fullName: fullName,
+      email: email,
+      phone: attending === 'yes' ? phone.value.trim() : '',
+      participants: attending === 'yes' ? (participants.value || '1') : '0'
+    };
+
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span class="spinner"></span><span>Saving…</span>';
+
+    try {
+      const res = await fetch(SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if (data.result !== 'success') throw new Error(data.message || 'Unknown error');
+
+      const word = data.action === 'updated' ? 'updated' : 'saved';
+      if (attending === 'yes') {
+        const n = parseInt(payload.participants, 10) || 1;
+        document.getElementById('thanksTitle').textContent = `You're in, ${fullName.split(' ')[0]}! 🎉`;
+        document.getElementById('thanksBody').innerHTML =
+          `We've ${word} your RSVP for <strong>${n} ${n === 1 ? 'seat' : 'seats'}</strong> on <strong>August 15</strong>. A confirmation email is on its way.`;
+      } else {
+        document.getElementById('thanksTitle').textContent = 'Thanks for letting us know';
+        document.getElementById('thanksBody').innerHTML =
+          `Your response has been ${word}. If your plans change, just RSVP again with this same email.`;
+      }
+      formView.style.display = 'none';
+      thanksView.classList.add('show');
+    } catch (err) {
+      showError('Something went wrong: ' + err.message + '. Please try again.');
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = '<span>Save my RSVP</span>';
+    }
+  });
+</script>
+</body>
+</html>
