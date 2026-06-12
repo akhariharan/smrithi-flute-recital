@@ -220,22 +220,68 @@
     background-size: cover; background-position: center;
   }
 
-  /* PayPal dropdown visual guide (inside donate reminder popup) */
-  .pp-mock { background: #fff; border: 1px solid rgba(13,36,89,0.14); border-radius: 14px; padding: 8px; margin: 0 0 22px; box-shadow: 0 14px 36px -18px rgba(13,36,89,0.4); }
-  .pp-mock-label { font-size: 11px; letter-spacing: 0.12em; font-weight: 700; color: rgba(13,36,89,0.5); text-transform: uppercase; padding: 8px 10px 6px; }
-  .pp-row { font-size: 14px; color: var(--navy); padding: 9px 12px; border-radius: 8px; line-height: 1.3; }
-  .pp-row.dim { color: rgba(13,36,89,0.45); }
-  .pp-target {
-    position: relative; display: flex; align-items: center; gap: 8px;
-    font-weight: 800; color: var(--navy);
-    background: linear-gradient(135deg, var(--yellow) 0%, var(--yellow-hot) 100%);
-    border: 2px solid var(--amber); border-radius: 10px; padding: 12px 12px;
-    box-shadow: 0 0 0 4px rgba(251,192,87,0.25); animation: ppPulse 1.6s ease-in-out infinite;
+  /* Animated PayPal dropdown demo (inside donate reminder popup) */
+  .dd { position: relative; background: #fff; border: 1px solid rgba(13,36,89,0.16); border-radius: 14px; padding: 6px; margin: 0 0 20px; box-shadow: 0 16px 40px -18px rgba(13,36,89,0.45); overflow: hidden; }
+  .dd-title { font-size: 11px; letter-spacing: 0.1em; font-weight: 700; color: rgba(13,36,89,0.5); text-transform: uppercase; padding: 8px 10px 8px; border-bottom: 1px solid rgba(13,36,89,0.08); margin-bottom: 4px; }
+  .dd-list { position: relative; }
+  .dd-row {
+    height: 28px; display: flex; align-items: center; padding: 0 12px;
+    font-size: 12.5px; color: rgba(13,36,89,0.78); border-radius: 7px;
+    position: relative; z-index: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
-  @keyframes ppPulse { 0%,100% { box-shadow: 0 0 0 4px rgba(251,192,87,0.25); } 50% { box-shadow: 0 0 0 8px rgba(251,192,87,0.12); } }
-  .pp-cursor { margin-left: auto; font-size: 18px; animation: ppPoint 1.2s ease-in-out infinite; }
-  @keyframes ppPoint { 0%,100% { transform: translateX(0); } 50% { transform: translateX(-5px); } }
-  .pp-check { width: 18px; height: 18px; flex-shrink: 0; }
+  /* the moving "mouse hover" highlight */
+  .dd-hover {
+    position: absolute; left: 2px; right: 2px; height: 28px; top: 0; z-index: 0;
+    border-radius: 7px; background: rgba(176,196,222,0.45);
+    animation: ddHover 7.5s cubic-bezier(.5,.05,.5,.95) infinite;
+  }
+  @keyframes ddHover {
+    0%   { transform: translateY(0);     opacity: 0; }
+    4%   { opacity: 1; }
+    10%  { transform: translateY(0); }
+    18%  { transform: translateY(28px); }
+    26%  { transform: translateY(56px); }
+    34%  { transform: translateY(84px); }
+    42%  { transform: translateY(112px); opacity: 1; }   /* lands on Blackwell */
+    46%  { opacity: 0; }                                  /* fades as it "selects" */
+    100% { transform: translateY(112px); opacity: 0; }
+  }
+  /* the target row's gold selected flash */
+  .dd-target { font-weight: 700; color: var(--navy); z-index: 2; }
+  .dd-target .dd-sel {
+    position: absolute; left: 2px; right: 2px; top: 0; height: 28px; border-radius: 7px; z-index: -1;
+    background: linear-gradient(135deg, var(--yellow) 0%, var(--yellow-hot) 100%);
+    border: 2px solid var(--amber); opacity: 0;
+    animation: ddSelect 7.5s ease-in-out infinite;
+  }
+  @keyframes ddSelect {
+    0%, 41%  { opacity: 0; box-shadow: 0 0 0 0 rgba(251,192,87,0); }
+    44%      { opacity: 1; box-shadow: 0 0 0 8px rgba(251,192,87,0.35); }   /* click flash */
+    48%      { opacity: 1; box-shadow: 0 0 0 3px rgba(251,192,87,0.25); }
+    88%      { opacity: 1; box-shadow: 0 0 0 3px rgba(251,192,87,0.25); }
+    96%,100% { opacity: 0; box-shadow: 0 0 0 0 rgba(251,192,87,0); }
+  }
+  .dd-check { width: 16px; height: 16px; margin-right: 7px; flex-shrink: 0; opacity: 0; animation: ddCheck 7.5s ease-in-out infinite; }
+  @keyframes ddCheck { 0%,42% { opacity: 0; transform: scale(0.5); } 47% { opacity: 1; transform: scale(1); } 88% { opacity: 1; } 96%,100% { opacity: 0; } }
+  /* the fake cursor */
+  .dd-cursor {
+    position: absolute; right: 16px; top: 3px; font-size: 20px; z-index: 5; pointer-events: none;
+    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3));
+    animation: ddCursor 7.5s cubic-bezier(.5,.05,.5,.95) infinite;
+  }
+  @keyframes ddCursor {
+    0%   { transform: translateY(0) scale(1); opacity: 0; }
+    4%   { opacity: 1; }
+    10%  { transform: translateY(0) scale(1); }
+    18%  { transform: translateY(28px) scale(1); }
+    26%  { transform: translateY(56px) scale(1); }
+    34%  { transform: translateY(84px) scale(1); }
+    41%  { transform: translateY(112px) scale(1); }
+    44%  { transform: translateY(112px) scale(0.8); }   /* click dip */
+    48%  { transform: translateY(112px) scale(1); }
+    90%  { transform: translateY(112px) scale(1); opacity: 1; }
+    100% { transform: translateY(112px) scale(1); opacity: 0; }
+  }
 
   .footer { position: relative; z-index: 2; text-align: center; margin: 56px auto 0; color: var(--text-dim); font-size: 13px; letter-spacing: 0.04em; }
 
@@ -548,16 +594,27 @@
       <p>On the PayPal page, you'll see a dropdown of camps. Please pick the highlighted one so your gift reaches the right place:</p>
     </div>
 
-    <div class="pp-mock" aria-hidden="true">
-      <div class="pp-mock-label">Choose the camp you'd like to support</div>
-      <div class="pp-row dim">Tech Trek – San Diego Camp 5032</div>
-      <div class="pp-target">
-        <svg class="pp-check" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#0D2459" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <span>Tech Trek – Santa Barbara Blackwell – 5040</span>
-        <span class="pp-cursor">👆</span>
+    <div class="dd" aria-hidden="true">
+      <div class="dd-title">Choose the camp you'd like to support</div>
+      <div class="dd-list">
+        <div class="dd-hover"></div>
+        <div class="dd-cursor">👆</div>
+        <div class="dd-row">Tech Trek – Davis Camp 5038</div>
+        <div class="dd-row">Tech Trek – Fresno Camp 5036</div>
+        <div class="dd-row">Tech Trek – Carson Camp 5045</div>
+        <div class="dd-row">Tech Trek – San Diego Camp 5032</div>
+        <div class="dd-row dd-target">
+          <span class="dd-sel"></span>
+          <svg class="dd-check" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#0D2459" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Tech Trek – Santa Barbara Blackwell – 5040
+        </div>
+        <div class="dd-row">Tech Trek – Santa Clara Hopper 5043</div>
+        <div class="dd-row">Tech Trek – Sonoma Franklin Camp 5037</div>
+        <div class="dd-row">Tech Trek – Virtual Camp 5042</div>
+        <div class="dd-row">Tech Trek – Whittier Camp 5031</div>
+        <div class="dd-row">Camp Undesignated</div>
+        <div class="dd-row">General Tech Trek Program</div>
       </div>
-      <div class="pp-row dim">Tech Trek – Santa Clara Hopper 5043</div>
-      <div class="pp-row dim">Tech Trek – Virtual Camp 5042</div>
     </div>
 
     <div class="donate-highlight" style="margin: 0 0 22px;">
