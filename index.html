@@ -220,6 +220,23 @@
     background-size: cover; background-position: center;
   }
 
+  /* PayPal dropdown visual guide (inside donate reminder popup) */
+  .pp-mock { background: #fff; border: 1px solid rgba(13,36,89,0.14); border-radius: 14px; padding: 8px; margin: 0 0 22px; box-shadow: 0 14px 36px -18px rgba(13,36,89,0.4); }
+  .pp-mock-label { font-size: 11px; letter-spacing: 0.12em; font-weight: 700; color: rgba(13,36,89,0.5); text-transform: uppercase; padding: 8px 10px 6px; }
+  .pp-row { font-size: 14px; color: var(--navy); padding: 9px 12px; border-radius: 8px; line-height: 1.3; }
+  .pp-row.dim { color: rgba(13,36,89,0.45); }
+  .pp-target {
+    position: relative; display: flex; align-items: center; gap: 8px;
+    font-weight: 800; color: var(--navy);
+    background: linear-gradient(135deg, var(--yellow) 0%, var(--yellow-hot) 100%);
+    border: 2px solid var(--amber); border-radius: 10px; padding: 12px 12px;
+    box-shadow: 0 0 0 4px rgba(251,192,87,0.25); animation: ppPulse 1.6s ease-in-out infinite;
+  }
+  @keyframes ppPulse { 0%,100% { box-shadow: 0 0 0 4px rgba(251,192,87,0.25); } 50% { box-shadow: 0 0 0 8px rgba(251,192,87,0.12); } }
+  .pp-cursor { margin-left: auto; font-size: 18px; animation: ppPoint 1.2s ease-in-out infinite; }
+  @keyframes ppPoint { 0%,100% { transform: translateX(0); } 50% { transform: translateX(-5px); } }
+  .pp-check { width: 18px; height: 18px; flex-shrink: 0; }
+
   .footer { position: relative; z-index: 2; text-align: center; margin: 56px auto 0; color: var(--text-dim); font-size: 13px; letter-spacing: 0.04em; }
 
   /* modal */
@@ -528,10 +545,23 @@
     </button>
     <div class="modal-head">
       <h3>One quick step before you donate 🙏</h3>
-      <p>On the PayPal page, please choose this option so your gift reaches the right place:</p>
+      <p>On the PayPal page, you'll see a dropdown of camps. Please pick the highlighted one so your gift reaches the right place:</p>
     </div>
+
+    <div class="pp-mock" aria-hidden="true">
+      <div class="pp-mock-label">Choose the camp you'd like to support</div>
+      <div class="pp-row dim">Tech Trek – San Diego Camp 5032</div>
+      <div class="pp-target">
+        <svg class="pp-check" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#0D2459" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Tech Trek – Santa Barbara Blackwell – 5040</span>
+        <span class="pp-cursor">👆</span>
+      </div>
+      <div class="pp-row dim">Tech Trek – Santa Clara Hopper 5043</div>
+      <div class="pp-row dim">Tech Trek – Virtual Camp 5042</div>
+    </div>
+
     <div class="donate-highlight" style="margin: 0 0 22px;">
-      ⭐ Select <strong>“Tech Trek – Santa Barbara Blackwell – 5040”</strong> from the dropdown to support Smrithi's cause.
+      ⭐ Select <strong>“Tech Trek – Santa Barbara Blackwell – 5040”</strong> to support Smrithi's cause.
     </div>
     <div class="modal-actions">
       <button type="button" class="btn-ghost-dark" onclick="closeDonateReminder()">Cancel</button>
