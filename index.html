@@ -182,6 +182,44 @@
   .donate-card .btn-primary { background: var(--navy); color: var(--yellow); box-shadow: 0 18px 50px -10px rgba(13,36,89,0.5); }
   .donate-card .btn-primary:hover { background: #0B1D4A; }
 
+  /* AAUW / Tech Trek card */
+  .card-aauw {
+    background: linear-gradient(140deg, rgba(255,107,107,0.16) 0%, rgba(255,169,77,0.12) 100%);
+    border-color: rgba(255,107,107,0.4);
+  }
+  .aauw-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; }
+  .aauw-badge { display: inline-block; background: linear-gradient(135deg, var(--coral), var(--magenta)); color: #fff; padding: 8px 14px; border-radius: 999px; font-size: 11px; letter-spacing: 0.16em; font-weight: 800; }
+  .aauw-link { display: inline-flex; align-items: center; gap: 6px; color: var(--amber); text-decoration: none; font-size: 14px; font-weight: 600; transition: color .2s; }
+  .aauw-link:hover { color: #fff; }
+  .aauw-link svg { width: 14px; height: 14px; }
+  .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 26px; padding-top: 24px; border-top: 1px solid var(--mist-strong); }
+  .stat { display: flex; flex-direction: column; gap: 4px; }
+  .stat-num {
+    font-size: clamp(24px, 3vw, 34px); font-weight: 800; letter-spacing: -0.02em;
+    background: linear-gradient(95deg, var(--yellow), var(--coral), var(--magenta));
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent;
+  }
+  .stat-label { font-size: 13px; color: var(--text-dim); line-height: 1.4; }
+
+  /* donation highlight + methods */
+  .donate-highlight {
+    max-width: 560px; margin: 0 auto 22px; padding: 16px 20px;
+    background: var(--navy); color: var(--ivory); border-radius: 14px;
+    font-size: 15px; line-height: 1.5; box-shadow: 0 14px 36px -14px rgba(13,36,89,0.6);
+  }
+  .donate-highlight strong { color: var(--yellow); }
+  .donate-methods { display: flex; gap: 18px; flex-wrap: wrap; justify-content: center; align-items: stretch; margin-top: 8px; }
+  .method { flex: 1 1 240px; max-width: 320px; background: rgba(255,255,255,0.5); border: 1px solid rgba(13,36,89,0.12); border-radius: 16px; padding: 22px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  .method h3 { margin: 0; color: var(--navy); font-size: 17px; font-weight: 800; }
+  .method p { margin: 0; font-size: 13px; color: rgba(13,36,89,0.7); }
+  .method-or { display: flex; align-items: center; color: var(--navy); font-weight: 800; font-size: 13px; opacity: 0.6; }
+  .zelle-qr {
+    width: 150px; height: 150px; border-radius: 12px; background: #fff;
+    border: 2px dashed rgba(13,36,89,0.3); display: flex; align-items: center; justify-content: center;
+    text-align: center; font-size: 12px; color: rgba(13,36,89,0.55); padding: 10px;
+    background-size: cover; background-position: center;
+  }
+
   .footer { position: relative; z-index: 2; text-align: center; margin: 56px auto 0; color: var(--text-dim); font-size: 13px; letter-spacing: 0.04em; }
 
   /* modal */
@@ -349,6 +387,27 @@
       </div>
     </section>
 
+    <!-- AAUW / TECH TREK -->
+    <section class="section">
+      <div class="card card-aauw">
+        <div class="aauw-header">
+          <span class="aauw-badge">AAUW · TECH TREK</span>
+          <a class="aauw-link" href="https://www.aauw-ca.org/tech-trek/" target="_blank" rel="noopener">
+            aauw-ca.org/tech-trek
+            <svg viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M17 7H8M17 7v9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+        <h2>One week of STEM that can change a girl's future</h2>
+        <p>The <strong>American Association of University Women (AAUW)</strong> works to advance equity for women and girls. Its signature program, <strong>Tech Trek</strong>, is a week-long summer camp that immerses girls entering 8th grade in science, technology, engineering, and math — with hands-on workshops, college-campus life, and inspiring women role models from STEM fields.</p>
+        <p>Started in California in 1998, Tech Trek delivers the life-changing message that <strong>STEM is for girls</strong>. Camp fees are sponsored by local AAUW branches through donations, so families pay little or nothing. Your gift tonight helps send more local girls to camp.</p>
+        <div class="stats-row">
+          <div class="stat"><span class="stat-num">15,000+</span><span class="stat-label">girls inspired over 25+ years</span></div>
+          <div class="stat"><span class="stat-num">8th</span><span class="stat-label">grade — a make-or-break year for STEM interest</span></div>
+          <div class="stat"><span class="stat-num">100+</span><span class="stat-label">local AAUW branches sponsor campers</span></div>
+        </div>
+      </div>
+    </section>
+
     <!-- DONATE -->
     <section class="section" id="donate">
       <div class="donate-card">
@@ -356,10 +415,32 @@
         <span class="section-tag">DONATE</span>
         <h2>Support the cause</h2>
         <p>Every contribution helps advance AAUW's mission of equity and opportunity for women and girls in STEM. If you're moved by Smrithi's story, please consider chipping in.</p>
-        <a class="btn-primary btn-big" id="donateBtn" href="PASTE_DONATION_LINK_HERE" target="_blank" rel="noopener">
-          <span>I'd like to donate</span>
-          <svg viewBox="0 0 24 24" fill="none" class="btn-arrow"><path d="M7 17L17 7M17 7H8M17 7v9" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </a>
+
+        <div class="donate-highlight">
+          ⭐ Important: when you donate, please select <strong>“Tech Trek – Santa Barbara Blackwell – 5040”</strong> so your gift goes directly to support Smrithi's cause.
+        </div>
+
+        <div class="donate-methods">
+          <div class="method">
+            <h3>Donate by card / PayPal</h3>
+            <p>Secure checkout. Remember to choose <strong>Tech Trek – Santa Barbara Blackwell – 5040</strong>.</p>
+            <a class="btn-primary btn-big" id="donateBtn" href="https://www.paypal.com/donate?hosted_button_id=JJGN3W2P3Z6UE" target="_blank" rel="noopener">
+              <span>Donate via PayPal</span>
+              <svg viewBox="0 0 24 24" fill="none" class="btn-arrow"><path d="M7 17L17 7M17 7H8M17 7v9" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+          </div>
+
+          <div class="method-or">OR</div>
+
+          <div class="method">
+            <h3>Send via Zelle</h3>
+            <p>Prefer Zelle? Scan the QR code below to send your donation directly.</p>
+            <!-- Replace the background-image URL below with your Zelle QR code image -->
+            <div class="zelle-qr" id="zelleQr" style="background-image: url('PASTE_ZELLE_QR_IMAGE_URL_HERE');">
+              Zelle QR code<br/>(add your image)
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -441,7 +522,7 @@
   /* ============================================================
      CONFIG — fill these two in
      ============================================================ */
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx_516IsYv4YimRJ092EEQ9b5gZs2qRV9-3iWYg8ksHayqH_vnXTVowS38HSNJrUTnu/exec";
+  const SCRIPT_URL = "PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE";
   // Donation link is set directly on the button's href in the HTML above
   //   (search for PASTE_DONATION_LINK_HERE). If you leave it, the button does nothing.
   /* ============================================================ */
@@ -452,6 +533,14 @@
     const hasPhoto = raw && !raw.includes('PASTE_SMRITHI_PHOTO_URL_HERE');
     document.getElementById('portraitImg').style.display = hasPhoto ? 'block' : 'none';
     document.getElementById('portraitFallback').style.display = hasPhoto ? 'none' : 'block';
+  })();
+
+  // clear the Zelle placeholder text once a real QR image is added
+  (function () {
+    const qr = document.getElementById('zelleQr');
+    if (qr && qr.style.backgroundImage && !qr.style.backgroundImage.includes('PASTE_ZELLE_QR_IMAGE_URL_HERE')) {
+      qr.textContent = '';
+    }
   })();
 
   const backdrop = document.getElementById('backdrop');
