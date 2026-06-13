@@ -221,68 +221,6 @@
     background-size: cover; background-position: center;
   }
 
-  /* Animated PayPal dropdown demo (inside donate reminder popup) */
-  .dd { position: relative; background: #fff; border: 1px solid rgba(46,31,68,0.16); border-radius: 14px; padding: 6px; margin: 0 0 20px; box-shadow: 0 16px 40px -18px rgba(46,31,68,0.45); overflow: hidden; }
-  .dd-title { font-size: 11px; letter-spacing: 0.1em; font-weight: 700; color: rgba(46,31,68,0.5); text-transform: uppercase; padding: 8px 10px 8px; border-bottom: 1px solid rgba(46,31,68,0.08); margin-bottom: 4px; }
-  .dd-list { position: relative; }
-  .dd-row {
-    height: 28px; display: flex; align-items: center; padding: 0 12px;
-    font-size: 12.5px; color: rgba(46,31,68,0.78); border-radius: 7px;
-    position: relative; z-index: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
-  /* the moving "mouse hover" highlight */
-  .dd-hover {
-    position: absolute; left: 2px; right: 2px; height: 28px; top: 0; z-index: 0;
-    border-radius: 7px; background: rgba(184,143,212,0.45);
-    animation: ddHover 7.5s cubic-bezier(.5,.05,.5,.95) infinite;
-  }
-  @keyframes ddHover {
-    0%   { transform: translateY(0);     opacity: 0; }
-    4%   { opacity: 1; }
-    10%  { transform: translateY(0); }
-    18%  { transform: translateY(28px); }
-    26%  { transform: translateY(56px); }
-    34%  { transform: translateY(84px); }
-    42%  { transform: translateY(112px); opacity: 1; }   /* lands on Blackwell */
-    46%  { opacity: 0; }                                  /* fades as it "selects" */
-    100% { transform: translateY(112px); opacity: 0; }
-  }
-  /* the target row's gold selected flash */
-  .dd-target { font-weight: 700; color: var(--navy); z-index: 2; }
-  .dd-target .dd-sel {
-    position: absolute; left: 2px; right: 2px; top: 0; height: 28px; border-radius: 7px; z-index: -1;
-    background: linear-gradient(135deg, var(--yellow) 0%, var(--yellow-hot) 100%);
-    border: 2px solid var(--amber); opacity: 0;
-    animation: ddSelect 7.5s ease-in-out infinite;
-  }
-  @keyframes ddSelect {
-    0%, 41%  { opacity: 0; box-shadow: 0 0 0 0 rgba(158,123,181,0); }
-    44%      { opacity: 1; box-shadow: 0 0 0 8px rgba(158,123,181,0.35); }   /* click flash */
-    48%      { opacity: 1; box-shadow: 0 0 0 3px rgba(158,123,181,0.25); }
-    88%      { opacity: 1; box-shadow: 0 0 0 3px rgba(158,123,181,0.25); }
-    96%,100% { opacity: 0; box-shadow: 0 0 0 0 rgba(158,123,181,0); }
-  }
-  .dd-check { width: 16px; height: 16px; margin-right: 7px; flex-shrink: 0; opacity: 0; animation: ddCheck 7.5s ease-in-out infinite; }
-  @keyframes ddCheck { 0%,42% { opacity: 0; transform: scale(0.5); } 47% { opacity: 1; transform: scale(1); } 88% { opacity: 1; } 96%,100% { opacity: 0; } }
-  /* the fake cursor */
-  .dd-cursor {
-    position: absolute; right: 16px; top: 3px; font-size: 20px; z-index: 5; pointer-events: none;
-    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3));
-    animation: ddCursor 7.5s cubic-bezier(.5,.05,.5,.95) infinite;
-  }
-  @keyframes ddCursor {
-    0%   { transform: translateY(0) scale(1); opacity: 0; }
-    4%   { opacity: 1; }
-    10%  { transform: translateY(0) scale(1); }
-    18%  { transform: translateY(28px) scale(1); }
-    26%  { transform: translateY(56px) scale(1); }
-    34%  { transform: translateY(84px) scale(1); }
-    41%  { transform: translateY(112px) scale(1); }
-    44%  { transform: translateY(112px) scale(0.8); }   /* click dip */
-    48%  { transform: translateY(112px) scale(1); }
-    90%  { transform: translateY(112px) scale(1); opacity: 1; }
-    100% { transform: translateY(112px) scale(1); opacity: 0; }
-  }
 
   .footer { position: relative; z-index: 2; text-align: center; margin: 56px auto 0; color: var(--text-dim); font-size: 13px; letter-spacing: 0.04em; }
 
@@ -481,29 +419,15 @@
         <h2>Support the cause</h2>
         <p>Every contribution helps advance AAUW's mission of equity and opportunity for women and girls in STEM. If you're moved by Smrithi's story, please consider chipping in.</p>
 
-        <div class="donate-highlight">
-          ⭐ Important: when you donate, please select <strong>“Tech Trek – Santa Barbara Blackwell – 5040”</strong> so your gift goes directly to support Smrithi's cause.
-        </div>
-
         <div class="donate-methods">
           <div class="method">
-            <h3>Donate by card / PayPal</h3>
-            <p>Secure checkout. Remember to choose <strong>Tech Trek – Santa Barbara Blackwell – 5040</strong>.</p>
-            <button class="btn-primary btn-big" id="donateBtn" onclick="openDonateReminder()">
-              <span>Donate via PayPal</span>
-              <svg viewBox="0 0 24 24" fill="none" class="btn-arrow"><path d="M7 17L17 7M17 7H8M17 7v9" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
-          </div>
-
-          <div class="method-or">OR</div>
-
-          <div class="method">
-            <h3>Send via Zelle</h3>
-            <p>Prefer Zelle? Scan the QR code below to send your donation directly.</p>
-            <!-- Replace the background-image URL below with your Zelle QR code image -->
-            <div class="zelle-qr" id="zelleQr" style="background-image: url('PASTE_ZELLE_QR_IMAGE_URL_HERE');">
-              Zelle QR code<br/>(add your image)
+            <h3>Send your donation via Zelle</h3>
+            <p>Scan the QR code with your banking app to send your gift directly to <strong>Hari Baradwaj</strong>.</p>
+            <!-- Save the Zelle QR image in the same folder as this file, named zelle-qr.png -->
+            <div class="zelle-qr" id="zelleQr" style="background-image: url('zelle-qr.png');">
+              Zelle QR code<br/>(add zelle-qr.png)
             </div>
+            <p style="font-size:12px; opacity:0.75;">All proceeds support AAUW Tech Trek — Santa Barbara Blackwell #5040.</p>
           </div>
         </div>
       </div>
@@ -585,64 +509,44 @@
     </div>
   </div>
 
-  <!-- DONATION REMINDER MODAL -->
+  <!-- ZELLE DONATION MODAL -->
   <div class="modal-backdrop" id="donateBackdrop" onclick="closeDonateReminder()"></div>
   <div class="modal" id="donateModal" role="dialog" aria-modal="true">
     <button class="modal-close" onclick="closeDonateReminder()" aria-label="Close">
       <svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
     </button>
-    <div class="modal-head">
-      <h3>One quick step before you donate 🙏</h3>
-      <p>On the PayPal page, you'll see a dropdown of camps. Please pick the highlighted one so your gift reaches the right place:</p>
+    <div class="modal-head" style="text-align:center;">
+      <h3>Thank you for supporting the cause 💜</h3>
+      <p>Scan the Zelle QR code below with your banking app to send your donation directly to <strong>Hari Baradwaj</strong>.</p>
     </div>
 
-    <div class="dd" aria-hidden="true">
-      <div class="dd-title">Choose the camp you'd like to support</div>
-      <div class="dd-list">
-        <div class="dd-hover"></div>
-        <div class="dd-cursor">👆</div>
-        <div class="dd-row">Tech Trek – Davis Camp 5038</div>
-        <div class="dd-row">Tech Trek – Fresno Camp 5036</div>
-        <div class="dd-row">Tech Trek – Carson Camp 5045</div>
-        <div class="dd-row">Tech Trek – San Diego Camp 5032</div>
-        <div class="dd-row dd-target">
-          <span class="dd-sel"></span>
-          <svg class="dd-check" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#2E1F44" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Tech Trek – Santa Barbara Blackwell – 5040
-        </div>
-        <div class="dd-row">Tech Trek – Santa Clara Hopper 5043</div>
-        <div class="dd-row">Tech Trek – Sonoma Franklin Camp 5037</div>
-        <div class="dd-row">Tech Trek – Virtual Camp 5042</div>
-        <div class="dd-row">Tech Trek – Whittier Camp 5031</div>
-        <div class="dd-row">Camp Undesignated</div>
-        <div class="dd-row">General Tech Trek Program</div>
+    <div style="display:flex; justify-content:center; margin: 6px 0 18px;">
+      <div class="zelle-qr" style="width: 240px; height: 240px; background-image: url('zelle-qr.png');">
+        Zelle QR code<br/>(add zelle-qr.png)
       </div>
     </div>
 
-    <div class="donate-highlight" style="margin: 0 0 22px;">
-      ⭐ Select <strong>“Tech Trek – Santa Barbara Blackwell – 5040”</strong> to support Smrithi's cause.
+    <div class="donate-highlight" style="margin: 0 0 22px; text-align:center;">
+      All proceeds support <strong>AAUW Tech Trek — Santa Barbara Blackwell #5040</strong>.
     </div>
-    <div class="modal-actions">
-      <button type="button" class="btn-ghost-dark" onclick="closeDonateReminder()">Cancel</button>
-      <button type="button" class="btn-primary" onclick="goToPayPal()"><span>Got it — continue to PayPal</span></button>
+    <div class="modal-actions" style="justify-content:center;">
+      <button type="button" class="btn-primary" onclick="closeDonateReminder()"><span>Done</span></button>
     </div>
   </div>
 
 <script>
   /* ============================================================
-     CONFIG — fill these two in
+     CONFIG
      ============================================================ */
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx_516IsYv4YimRJ092EEQ9b5gZs2qRV9-3iWYg8ksHayqH_vnXTVowS38HSNJrUTnu/exec";
-  const PAYPAL_URL = "https://www.paypal.com/donate?hosted_button_id=JJGN3W2P3Z6UE";
   /* ============================================================ */
 
-  // Donation reminder popup → then route to PayPal
+  // Zelle donation popup
   const donateBackdrop = document.getElementById('donateBackdrop');
   const donateModal = document.getElementById('donateModal');
   function openDonateReminder() { donateBackdrop.style.display = 'block'; donateModal.style.display = 'block'; }
   function closeDonateReminder() { donateBackdrop.style.display = 'none'; donateModal.style.display = 'none'; }
-  function goToPayPal() { window.open(PAYPAL_URL, '_blank', 'noopener'); closeDonateReminder(); }
-  // from the RSVP thank-you screen → close it and show the donation reminder
+  // from the RSVP thank-you screen → close it and show the Zelle donation popup
   function inviteToDonate() { closeRsvp(); openDonateReminder(); }
 
   // show real photo only if the user actually set a URL
@@ -653,12 +557,15 @@
     document.getElementById('portraitFallback').style.display = hasPhoto ? 'none' : 'block';
   })();
 
-  // clear the Zelle placeholder text once a real QR image is added
+  // hide the placeholder text once the QR image loads; keep it if the file is missing
   (function () {
-    const qr = document.getElementById('zelleQr');
-    if (qr && qr.style.backgroundImage && !qr.style.backgroundImage.includes('PASTE_ZELLE_QR_IMAGE_URL_HERE')) {
-      qr.textContent = '';
-    }
+    document.querySelectorAll('.zelle-qr').forEach(function (qr) {
+      const m = /url\(['"]?([^'")]+)['"]?\)/.exec(qr.style.backgroundImage || '');
+      if (!m) return;
+      const img = new Image();
+      img.onload = function () { qr.textContent = ''; };
+      img.src = m[1];
+    });
   })();
 
   const backdrop = document.getElementById('backdrop');
