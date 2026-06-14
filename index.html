@@ -271,7 +271,12 @@
     background: #fff; border: 1.5px solid rgba(158,123,181,0.25); border-radius: 12px;
     transition: border-color .18s ease, box-shadow .18s ease;
   }
-  .form-field input:focus { outline: none; border-color: var(--coral); box-shadow: 0 0 0 4px rgba(158,123,181,0.15); }
+  .form-field textarea {
+    width: 100%; padding: 14px 16px; font-size: 16px; font-family: inherit; color: var(--navy);
+    background: #fff; border: 1.5px solid rgba(158,123,181,0.25); border-radius: 12px;
+    transition: border-color .18s ease, box-shadow .18s ease; resize: vertical; min-height: 110px;
+  }
+  .form-field input:focus, .form-field textarea:focus { outline: none; border-color: var(--coral); box-shadow: 0 0 0 4px rgba(158,123,181,0.15); }
   .form-hint { font-size: 12px; color: rgba(46,31,68,0.5); }
   .accept-only { display: none; }
   .accept-only.show { display: flex; flex-direction: column; gap: 16px; }
@@ -443,6 +448,12 @@
 
     <footer class="footer">
       <span>Built with love for AAUW · See you on August 15</span>
+      <div style="margin-top: 10px;">
+        <a class="aauw-link" href="#" onclick="openContact(); return false;">
+          Contact the host
+          <svg viewBox="0 0 24 24" fill="none"><path d="M4 6h16v12H4z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M4 7l8 6 8-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
     </footer>
   </div>
 
@@ -535,7 +546,7 @@
     </div>
 
     <div style="text-align:center; margin: 0 0 18px;">
-      <a class="btn-primary" href="PASTE_ZELLE_LINK_HERE" target="_blank" rel="noopener">
+      <a class="btn-primary" href="https://enroll.zellepay.com/qr-codes?data=eyJuYW1lIjoiSEFSSSIsImFjdGlvbiI6InBheW1lbnQiLCJ0b2tlbiI6Ijk3Mzg2NDAwOTkifQ==" target="_blank" rel="noopener">
         <span>Open in Zelle</span>
         <svg viewBox="0 0 24 24" fill="none" class="btn-arrow"><path d="M7 17L17 7M17 7H8M17 7v9" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </a>
@@ -546,6 +557,33 @@
     </div>
     <div class="modal-actions" style="justify-content:center;">
       <button type="button" class="btn-ghost-dark" onclick="closeDonateReminder()"><span>Done</span></button>
+    </div>
+  </div>
+
+  <!-- CONTACT HOST MODAL -->
+  <div class="modal-backdrop" id="contactBackdrop" onclick="closeContact()"></div>
+  <div class="modal" id="contactModal" role="dialog" aria-modal="true">
+    <button class="modal-close" onclick="closeContact()" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+    </button>
+    <div class="modal-head">
+      <h3>Contact the host</h3>
+      <p>Leave a message for Hari. This opens your email app with the message ready to send.</p>
+    </div>
+    <div class="rsvp-form">
+      <div class="form-field">
+        <label for="contactName">Your name</label>
+        <input type="text" id="contactName" placeholder="Jane Doe" autocomplete="name" />
+      </div>
+      <div class="form-field">
+        <label for="contactMsg">Message</label>
+        <textarea id="contactMsg" placeholder="Type your message here..."></textarea>
+      </div>
+      <p class="form-error" id="contactError"></p>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="btn-ghost-dark" onclick="closeContact()">Cancel</button>
+      <button type="button" class="btn-primary" onclick="sendContact()"><span>Send message</span></button>
     </div>
   </div>
 
@@ -563,6 +601,26 @@
   function closeDonateReminder() { donateBackdrop.style.display = 'none'; donateModal.style.display = 'none'; }
   // from the RSVP thank-you screen → close it and show the Zelle donation popup
   function inviteToDonate() { closeRsvp(); openDonateReminder(); }
+
+  // Contact host — opens the visitor's email app, message sent from their address
+  const HOST_EMAIL = "akhariharan@gmail.com";
+  const contactBackdrop = document.getElementById('contactBackdrop');
+  const contactModal = document.getElementById('contactModal');
+  function openContact() { contactBackdrop.style.display = 'block'; contactModal.style.display = 'block'; }
+  function closeContact() { contactBackdrop.style.display = 'none'; contactModal.style.display = 'none'; }
+  function sendContact() {
+    const name = document.getElementById('contactName').value.trim();
+    const msg = document.getElementById('contactMsg').value.trim();
+    const err = document.getElementById('contactError');
+    if (!msg) { err.textContent = 'Please enter a message.'; err.classList.add('show'); return; }
+    err.classList.remove('show');
+    const subject = "Message from " + (name || "a guest") + " — Smrithi's Benefit Concert";
+    const body = msg + "\n\n— " + (name || "") + "\n(Sent from the benefit concert RSVP page)";
+    window.location.href = "mailto:" + HOST_EMAIL +
+      "?subject=" + encodeURIComponent(subject) +
+      "&body=" + encodeURIComponent(body);
+    closeContact();
+  }
 
   // show real photo only if the user actually set a URL
   (function () {
@@ -595,12 +653,17 @@
   const btnYes = document.getElementById('btnYes');
   const btnNo = document.getElementById('btnNo');
 
-  let attending = 'yes';
+  let attending = null;
 
   function openRsvp() {
     formView.style.display = 'block';
     thanksView.classList.remove('show');
-    setAttending('yes');
+    // no default choice — guest must explicitly pick Accept or Decline
+    attending = null;
+    btnYes.classList.remove('active-yes');
+    btnNo.classList.remove('active-no');
+    acceptFields.classList.remove('show');
+    phone.required = false;
     formError.classList.remove('show');
     backdrop.style.display = 'block';
     modal.style.display = 'block';
@@ -622,6 +685,8 @@
   document.getElementById('rsvpForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     formError.classList.remove('show');
+
+    if (attending !== 'yes' && attending !== 'no') { showError('Please choose Accept or Decline.'); return; }
 
     const fullName = document.getElementById('fullName').value.trim();
     const email = document.getElementById('email').value.trim();
