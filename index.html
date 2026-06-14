@@ -59,10 +59,17 @@
   .hero {
     position: relative; z-index: 2;
     max-width: 1180px; margin: 0 auto;
-    display: grid; grid-template-columns: 1.05fr 0.95fr;
-    gap: 56px; align-items: center;
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    grid-template-rows: min-content auto;
+    grid-template-areas: "kicker art" "copy art";
+    column-gap: 56px; row-gap: 0;
+    align-items: start;
     padding: 32px 12px 56px;
   }
+  .hero > .kicker { grid-area: kicker; justify-self: start; }
+  .hero-copy { grid-area: copy; }
+  .hero-art { grid-area: art; align-self: center; }
   .kicker {
     display: inline-flex; align-items: center; gap: 8px;
     font-size: 12px; letter-spacing: 0.22em; font-weight: 600;
@@ -291,10 +298,16 @@
 
   @media (max-width: 900px) {
     .stage { padding: calc(env(safe-area-inset-top, 0px) + 36px) 16px 56px; }
-    .hero { grid-template-columns: 1fr; gap: 28px; padding: 4px 0 36px; }
-    /* headline first on mobile, photo below — so the top of the page isn't the cropped image */
-    .hero-copy { order: 0; }
-    .hero-art { order: 1; margin-top: 4px; }
+    /* mobile stack: eyebrow → photo → headline & details */
+    .hero {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto auto auto;
+      grid-template-areas: "kicker" "art" "copy";
+      row-gap: 18px; column-gap: 0;
+      padding: 4px 0 36px;
+    }
+    .hero > .kicker { margin-bottom: 0; }
+    .venue-card { display: none; }
     .portrait-wrap { max-width: 280px; transform: rotate(-1deg); }
     .card { padding: 28px 24px; }
     .donate-card { padding: 40px 22px; }
@@ -320,8 +333,8 @@
 
     <!-- HERO -->
     <section class="hero">
+      <span class="kicker"><span class="kicker-dot"></span> A BENEFIT CONCERT FOR AAUW</span>
       <div class="hero-copy">
-        <span class="kicker"><span class="kicker-dot"></span> A BENEFIT CONCERT FOR AAUW</span>
         <h1 class="hero-title">
           Celebrating Music,
           <span class="hero-title-accent">Inspiring Futures</span>
