@@ -566,24 +566,42 @@
     <button class="modal-close" onclick="closeContact()" aria-label="Close">
       <svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
     </button>
-    <div class="modal-head">
-      <h3>Contact the host</h3>
-      <p>Leave a message for Hari. This opens your email app with the message ready to send.</p>
-    </div>
-    <div class="rsvp-form">
-      <div class="form-field">
-        <label for="contactName">Your name</label>
-        <input type="text" id="contactName" placeholder="Jane Doe" autocomplete="name" />
+    <div id="contactFormView">
+      <div class="modal-head">
+        <h3>Contact the host</h3>
+        <p>Leave a message and we'll pass it along to Hari.</p>
       </div>
-      <div class="form-field">
-        <label for="contactMsg">Message</label>
-        <textarea id="contactMsg" placeholder="Type your message here..."></textarea>
+      <div class="rsvp-form">
+        <div class="form-field">
+          <label for="contactName">Your name</label>
+          <input type="text" id="contactName" placeholder="Jane Doe" autocomplete="name" />
+        </div>
+        <div class="form-field">
+          <label for="contactEmail">Your email (optional)</label>
+          <input type="email" id="contactEmail" placeholder="you@example.com" autocomplete="email" />
+          <span class="form-hint">So Hari can reply to you.</span>
+        </div>
+        <div class="form-field">
+          <label for="contactMsg">Message</label>
+          <textarea id="contactMsg" placeholder="Type your message here..."></textarea>
+        </div>
+        <p class="form-error" id="contactError"></p>
       </div>
-      <p class="form-error" id="contactError"></p>
+      <div class="modal-actions">
+        <button type="button" class="btn-ghost-dark" onclick="closeContact()">Cancel</button>
+        <button type="button" class="btn-primary" id="contactSubmit" onclick="sendContact()"><span>Send message</span></button>
+      </div>
     </div>
-    <div class="modal-actions">
-      <button type="button" class="btn-ghost-dark" onclick="closeContact()">Cancel</button>
-      <button type="button" class="btn-primary" onclick="sendContact()"><span>Send message</span></button>
+
+    <div class="thanks" id="contactThanksView">
+      <div class="thanks-burst">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <h3>Message sent 💜</h3>
+      <p>Thank you — your message is on its way to Hari.</p>
+      <div class="modal-actions" style="justify-content:center;">
+        <button class="btn-primary" onclick="closeContact()">Done</button>
+      </div>
     </div>
   </div>
 
@@ -602,24 +620,47 @@
   // from the RSVP thank-you screen → close it and show the Zelle donation popup
   function inviteToDonate() { closeRsvp(); openDonateReminder(); }
 
-  // Contact host — opens the visitor's email app, message sent from their address
-  const HOST_EMAIL = "akhariharan@gmail.com";
+  // Contact host — message is emailed via the backend (from the host account to itself)
   const contactBackdrop = document.getElementById('contactBackdrop');
   const contactModal = document.getElementById('contactModal');
-  function openContact() { contactBackdrop.style.display = 'block'; contactModal.style.display = 'block'; }
+  const contactFormView = document.getElementById('contactFormView');
+  const contactThanksView = document.getElementById('contactThanksView');
+  const contactSubmit = document.getElementById('contactSubmit');
+  function openContact() {
+    contactFormView.style.display = 'block';
+    contactThanksView.classList.remove('show');
+    document.getElementById('contactError').classList.remove('show');
+    contactBackdrop.style.display = 'block';
+    contactModal.style.display = 'block';
+  }
   function closeContact() { contactBackdrop.style.display = 'none'; contactModal.style.display = 'none'; }
-  function sendContact() {
+  async function sendContact() {
     const name = document.getElementById('contactName').value.trim();
+    const email = document.getElementById('contactEmail').value.trim();
     const msg = document.getElementById('contactMsg').value.trim();
     const err = document.getElementById('contactError');
     if (!msg) { err.textContent = 'Please enter a message.'; err.classList.add('show'); return; }
     err.classList.remove('show');
-    const subject = "Message from " + (name || "a guest") + " — Smrithi's Benefit Concert";
-    const body = msg + "\n\n— " + (name || "") + "\n(Sent from the benefit concert RSVP page)";
-    window.location.href = "mailto:" + HOST_EMAIL +
-      "?subject=" + encodeURIComponent(subject) +
-      "&body=" + encodeURIComponent(body);
-    closeContact();
+
+    contactSubmit.disabled = true;
+    contactSubmit.innerHTML = '<span class="spinner"></span><span>Sending…</span>';
+    try {
+      const res = await fetch(SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ type: 'contact', name: name, email: email, message: msg })
+      });
+      const data = await res.json();
+      if (data.result !== 'success') throw new Error(data.message || 'Unknown error');
+      contactFormView.style.display = 'none';
+      contactThanksView.classList.add('show');
+    } catch (e2) {
+      err.textContent = 'Could not send: ' + e2.message + '. Please try again.';
+      err.classList.add('show');
+    } finally {
+      contactSubmit.disabled = false;
+      contactSubmit.innerHTML = '<span>Send message</span>';
+    }
   }
 
   // show real photo only if the user actually set a URL
